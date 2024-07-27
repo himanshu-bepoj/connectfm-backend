@@ -5,7 +5,7 @@ module.exports.fetchYoutubeVideo = async (req, res, next) => {
   try {
     const { title, API_KEY, channelId, maxResults } = req.body;
 
-    const videos = await Video.find({ category: title });
+    const videos = await Video.find({ category: title }).sort({ 'snippet.publishedAt': -1 }).exec();
     const lastVideoFetched = await FetchVideo.findOne({ title });
     console.log(lastVideoFetched)
     const lastFetchTime =
@@ -105,7 +105,7 @@ module.exports.fetchYoutubeVideo = async (req, res, next) => {
           return lastVideoFetched.save();
         })
         .then(() => {
-          return Video.find({ category: title });
+          return Video.find({ category: title }).sort({ 'snippet.publishedAt': -1 }).exec();
         })
         .then(newFetchedVideos => {
           console.log(newFetchedVideos);
